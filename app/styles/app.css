@@ -85,8 +85,10 @@ img {
 }
 
 aside {
-  background: var(--color-light);
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+  background: var(--color-background);
+  border-left: 1px solid rgba(207, 181, 59, 0.16);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.6);
+  color: var(--color-text);
   height: 100vh;
   width: min(var(--aside-width), 100vw);
   position: fixed;
@@ -97,7 +99,7 @@ aside {
 
 aside header {
   align-items: center;
-  border-bottom: 1px solid var(--color-dark);
+  border-bottom: 1px solid rgba(207, 181, 59, 0.16);
   display: flex;
   height: var(--header-height);
   justify-content: space-between;
@@ -106,6 +108,18 @@ aside header {
 
 aside header h3 {
   margin: 0;
+  font-family: var(--font-headline);
+  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+}
+
+.aside-heading__sub {
+  display: block;
+  font-family: var(--font-label);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--color-outline-variant);
+  font-weight: 400;
 }
 
 aside header .close {
@@ -114,10 +128,12 @@ aside header .close {
   text-decoration: none;
   transition: all 200ms;
   width: 20px;
+  color: var(--color-text);
 }
 
 aside header .close:hover {
   opacity: 1;
+  color: var(--color-primary);
 }
 
 aside header h2 {
@@ -154,7 +170,7 @@ aside li {
 }
 
 .overlay {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -225,17 +241,6 @@ button.reset:hover:not(:has(> *)) {
 * components/Header
 * --------------------------------------------------
 */
-.header {
-  align-items: center;
-  background: #fff;
-  display: flex;
-  height: var(--header-height);
-  padding: 0 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
 .header-menu-mobile-toggle {
   @media (min-width: 48em) {
     display: none;
@@ -260,17 +265,6 @@ button.reset:hover:not(:has(> *)) {
 
 .header-menu-item {
   cursor: pointer;
-}
-
-.header-ctas {
-  align-items: center;
-  display: flex;
-  grid-gap: 1rem;
-  margin-left: auto;
-}
-
-.header-ctas > * {
-  min-width: fit-content;
 }
 
 /*
