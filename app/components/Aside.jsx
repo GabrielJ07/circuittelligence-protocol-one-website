@@ -56,6 +56,7 @@ export function Aside({children, heading, type}) {
   );
 }
 
+/** @type {React.Context<AsideContextValue | null>} */
 const AsideContext = createContext(null);
 
 Aside.Provider = function AsideProvider({children}) {

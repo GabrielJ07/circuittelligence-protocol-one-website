@@ -3,23 +3,32 @@ import {
   Outlet,
   useRouteError,
   isRouteErrorResponse,
+  type ShouldRevalidateFunction,
   Links,
   Meta,
   Scripts,
   ScrollRestoration,
   useRouteLoaderData,
 } from 'react-router';
+import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+import aurelianNightStyles from '~/styles/aurelian-night.css?url';
+import protocolStyles from '~/styles/protocol.css?url';
 import {PageLayout} from './components/PageLayout';
+
+export type RootLoader = typeof loader;
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
- * @type {ShouldRevalidateFunction}
  */
-export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  formMethod,
+  currentUrl,
+  nextUrl,
+}) => {
   // revalidate when a mutation is performed e.g add to cart, login...
   if (formMethod && formMethod !== 'GET') return true;
 
@@ -58,10 +67,7 @@ export function links() {
   ];
 }
 
-/**
- * @param {Route.LoaderArgs} args
- */
-export async function loader(args) {
+export async function loader(args: Route.LoaderArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
@@ -92,9 +98,8 @@ export async function loader(args) {
 /**
  * Load data necessary for rendering content above the fold. This is the critical data
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- * @param {Route.LoaderArgs}
  */
-async function loadCriticalData({context}) {
+async function loadCriticalData({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
   const [header] = await Promise.all([
@@ -114,9 +119,8 @@ async function loadCriticalData({context}) {
  * Load data for rendering content below the fold. This data is deferred and will be
  * fetched after the initial page load. If it's unavailable, the page should still 200.
  * Make sure to not throw any errors here, as it will cause the page to 500.
- * @param {Route.LoaderArgs}
  */
-function loadDeferredData({context}) {
+function loadDeferredData({context}: Route.LoaderArgs) {
   const {storefront, customerAccount, cart} = context;
 
   // defer the footer query (below the fold)
@@ -127,7 +131,7 @@ function loadDeferredData({context}) {
         footerMenuHandle: 'footer', // Adjust to your footer menu handle
       },
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       // Log query errors, but don't throw them so the page can still render
       console.error(error);
       return null;
@@ -139,10 +143,7 @@ function loadDeferredData({context}) {
   };
 }
 
-/**
- * @param {{children?: React.ReactNode}}
- */
-export function Layout({children}) {
+export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
 
   return (
@@ -150,8 +151,20 @@ export function Layout({children}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Flex:opsz,wght@8..144,400..700&display=swap"
+          rel="stylesheet"
+        />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={aurelianNightStyles}></link>
+        <link rel="stylesheet" href={protocolStyles}></link>
         <Meta />
         <Links />
       </head>
@@ -165,8 +178,7 @@ export function Layout({children}) {
 }
 
 export default function App() {
-  /** @type {RootLoader} */
-  const data = useRouteLoaderData('root');
+  const data = useRouteLoaderData<RootLoader>('root');
 
   if (!data) {
     return <Outlet />;
@@ -209,9 +221,3 @@ export function ErrorBoundary() {
     </div>
   );
 }
-
-/** @typedef {LoaderReturnData} RootLoader */
-
-/** @typedef {import('react-router').ShouldRevalidateFunction} ShouldRevalidateFunction */
-/** @typedef {import('./+types/root').Route} Route */
-/** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
