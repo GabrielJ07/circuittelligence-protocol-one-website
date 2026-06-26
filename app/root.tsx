@@ -158,7 +158,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Flex:opsz,wght@8..144,400..700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:ital,wght@1,400;1,500&display=swap"
           rel="stylesheet"
         />
         <link rel="stylesheet" href={resetStyles}></link>

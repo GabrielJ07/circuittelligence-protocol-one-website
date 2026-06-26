@@ -50,17 +50,7 @@ export function PageLayout({
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
   return (
-    <Aside
-      type="cart"
-      heading={
-        <>
-          ACTIVE PAYLOADS{' '}
-          <span className="aside-heading__sub">
-            // Aerospace Tactical Logistics
-          </span>
-        </>
-      }
-    >
+    <Aside type="cart" heading="DEPLOYMENT QUEUE">
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {

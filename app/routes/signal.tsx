@@ -45,14 +45,8 @@ export default function Signal() {
       <TerminalBlock />
 
       <footer className="signal__footer">
-        <Link to="/services" className="signal__footer-cta">
-          [SERVICES]
-        </Link>
-        <Link to="/shop-men" className="signal__footer-cta">
-          [SHOP MEN]
-        </Link>
-        <Link to="/shop-women" className="signal__footer-cta">
-          [SHOP WOMEN]
+        <Link to="/series-a" className="signal__footer-cta">
+          [VIEW SERIES-A]
         </Link>
       </footer>
     </article>
