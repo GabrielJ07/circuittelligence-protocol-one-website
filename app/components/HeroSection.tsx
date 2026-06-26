@@ -10,9 +10,10 @@ export function HeroSection() {
           Beautiful intelligence, bounded.
         </h1>
         <p className="hero-section__subtitle">
-          Engineered for the operator. Worn by the human.
+          Aerospace-grade systems hardware, deployed to the operator and the
+          human who wears it.
         </p>
-        <Link to="/series-a" className="hero-section__cta">
+        <Link to="/shop-men" className="hero-section__cta">
           [INITIATE DEPLOYMENT]
         </Link>
       </div>

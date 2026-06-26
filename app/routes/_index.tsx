@@ -7,7 +7,6 @@ import {CategoryShop} from '~/components/CategoryShop';
 import {LifestyleParallax} from '~/components/LifestyleParallax';
 import {ProductCarousel} from '~/components/ProductCarousel';
 import {InventoryGrid} from '~/components/InventoryGrid';
-import {SERIES_A_COLLECTION_ID} from '~/lib/department';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: 'Circuittelligence | Protocol:01'}];
@@ -20,9 +19,7 @@ export async function loader(args: Route.LoaderArgs) {
 
 function loadDeferredData({context}: Route.LoaderArgs) {
   const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY, {
-      variables: {id: SERIES_A_COLLECTION_ID},
-    })
+    .query(RECOMMENDED_PRODUCTS_QUERY)
     .catch((error: Error) => {
       console.error(error);
       return null;
@@ -51,9 +48,9 @@ export default function Homepage() {
 
       <TextOverlaySection
         eyebrow="SERIES-A"
-        title="Beautiful intelligence, bounded."
-        body="Engineered for the operator. Worn by the human. The store opens and closes — products are deployed, not browsed."
-        ctaText="[VIEW SERIES-A]"
+        title="Funding the next deployment."
+        body="Series-A capital extends the runway for Protocol:01 — every payload deployed reinvests directly into the next system."
+        ctaText="[VIEW FUND]"
         ctaHref="/series-a"
         align="right"
       />
@@ -65,9 +62,7 @@ export default function Homepage() {
       <Suspense fallback={null}>
         <Await resolve={data.recommendedProducts}>
           {(response) => (
-            <ProductCarousel
-              products={response?.collection?.products.nodes ?? []}
-            />
+            <ProductCarousel products={response?.products.nodes ?? []} />
           )}
         </Await>
       </Suspense>
@@ -75,9 +70,7 @@ export default function Homepage() {
       <Suspense fallback={null}>
         <Await resolve={data.recommendedProducts}>
           {(response) => (
-            <InventoryGrid
-              products={response?.collection?.products.nodes ?? []}
-            />
+            <InventoryGrid products={response?.products.nodes ?? []} />
           )}
         </Await>
       </Suspense>
@@ -104,16 +97,11 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
       height
     }
   }
-  query RecommendedProducts (
-    $id: ID!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    collection(id: $id) {
-      products(first: 10) {
-        nodes {
-          ...RecommendedProduct
-        }
+  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 8, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...RecommendedProduct
       }
     }
   }

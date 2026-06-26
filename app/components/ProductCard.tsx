@@ -4,7 +4,6 @@ import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {
   SIZE_CHIPS,
-  getSeriesATagline,
   normalizeSize,
   parseFeatureBullets,
   type DepartmentProduct,
@@ -26,16 +25,6 @@ export function ProductCard({product}: {product: DepartmentProduct}) {
     [product.features],
   );
 
-  const hasSizeOption = useMemo(
-    () =>
-      product.variants.nodes.some((variant) =>
-        variant.selectedOptions.some(
-          (option) => option.name.toLowerCase() === 'size',
-        ),
-      ),
-    [product.variants],
-  );
-
   const availableSizes = useMemo(() => {
     const sizes = new Set<string>();
     for (const variant of product.variants.nodes) {
@@ -49,7 +38,7 @@ export function ProductCard({product}: {product: DepartmentProduct}) {
   }, [product.variants]);
 
   const selectedVariant = useMemo(() => {
-    if (!hasSizeOption || !selectedSize) {
+    if (!selectedSize) {
       return product.variants.nodes.find((variant) => variant.availableForSale);
     }
     return product.variants.nodes.find(
@@ -61,11 +50,10 @@ export function ProductCard({product}: {product: DepartmentProduct}) {
             normalizeSize(option.value) === selectedSize,
         ),
     );
-  }, [hasSizeOption, product.variants, selectedSize]);
+  }, [product.variants, selectedSize]);
 
   const codename = product.title.split('//')[0]?.trim() ?? product.title;
-  const tagline =
-    getSeriesATagline(product.title) || product.description || product.title;
+  const tagline = product.description || product.title;
 
   return (
     <div className="product-card">
@@ -123,26 +111,24 @@ export function ProductCard({product}: {product: DepartmentProduct}) {
         )}
       </div>
 
-      {hasSizeOption && (
-        <div className="product-card__sizes">
-          {SIZE_CHIPS.map((size) => {
-            const available = availableSizes.has(size);
-            return (
-              <button
-                key={size}
-                type="button"
-                disabled={!available}
-                className={`product-card__size-chip ${
-                  selectedSize === size ? 'is-selected' : ''
-                }`}
-                onClick={() => setSelectedSize(size)}
-              >
-                {size}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      <div className="product-card__sizes">
+        {SIZE_CHIPS.map((size) => {
+          const available = availableSizes.size === 0 || availableSizes.has(size);
+          return (
+            <button
+              key={size}
+              type="button"
+              disabled={!available}
+              className={`product-card__size-chip ${
+                selectedSize === size ? 'is-selected' : ''
+              }`}
+              onClick={() => setSelectedSize(size)}
+            >
+              {size}
+            </button>
+          );
+        })}
+      </div>
 
       <AddToCartButton
         disabled={!selectedVariant}
@@ -163,7 +149,7 @@ export function ProductCard({product}: {product: DepartmentProduct}) {
         }
       >
         <span className="product-card__commit">
-          {selectedVariant ? 'AUTHORIZE DEPLOY →' : 'PROTOCOL CLOSED'}
+          {selectedVariant ? '[COMMIT TO PAYLOAD]' : '[PROTOCOL CLOSED]'}
         </span>
       </AddToCartButton>
 

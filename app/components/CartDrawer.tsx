@@ -11,9 +11,9 @@ export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | n
   if (!lines.length) {
     return (
       <div className="cart-drawer cart-drawer--empty">
-        <p>Queue is empty.</p>
-        <Link to="/" onClick={close} className="cart-drawer__browse">
-          RETURN TO SERIES-A
+        <p>No payloads queued.</p>
+        <Link to="/shop-men" onClick={close} className="cart-drawer__browse">
+          BROWSE INVENTORY →
         </Link>
       </div>
     );
@@ -55,7 +55,7 @@ export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | n
                 <button
                   type="submit"
                   className="cart-drawer__remove"
-                  aria-label="Remove from queue"
+                  aria-label="Remove payload"
                 >
                   &times;
                 </button>
@@ -66,7 +66,7 @@ export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | n
       </ul>
       <footer className="cart-drawer__footer">
         <div className="cart-drawer__total">
-          Subtotal:{' '}
+          Payload Valuation:{' '}
           {cart?.cost?.subtotalAmount ? (
             <Money data={cart.cost.subtotalAmount} />
           ) : (
@@ -77,7 +77,7 @@ export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | n
           href={cart?.checkoutUrl ?? '#'}
           className="cart-drawer__deploy"
         >
-          CONFIRM DEPLOYMENT →
+          [DEPLOY PAYLOAD]
         </a>
       </footer>
     </div>

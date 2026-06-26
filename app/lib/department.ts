@@ -99,43 +99,6 @@ export const DEPARTMENT_QUERY = `#graphql
   }
 ` as const;
 
-export const SERIES_A_COLLECTION_ID = 'gid://shopify/Collection/291819716704';
-
-export const SERIES_A_COLLECTION_QUERY = `#graphql
-  ${DEPARTMENT_PRODUCT_FRAGMENT}
-  query SeriesACollection(
-    $id: ID!
-    $country: CountryCode
-    $language: LanguageCode
-    $first: Int
-  ) @inContext(country: $country, language: $language) {
-    collection(id: $id) {
-      id
-      handle
-      title
-      description
-      image {
-        id
-        url
-        altText
-        width
-        height
-      }
-      products(first: $first) {
-        nodes {
-          ...DepartmentProduct
-        }
-        pageInfo {
-          hasPreviousPage
-          hasNextPage
-          endCursor
-          startCursor
-        }
-      }
-    }
-  }
-` as const;
-
 import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 
 export interface DepartmentMoney {
@@ -207,30 +170,6 @@ const SIZE_ALIASES: Record<string, string> = {
 
 export function normalizeSize(value: string): string {
   return SIZE_ALIASES[value.trim().toLowerCase()] ?? value.trim().toUpperCase();
-}
-
-export const SERIES_A_TAGLINES: Record<string, string> = {
-  'CIVIC-01':
-    'Your neighborhood looked this good before the construction barriers too.',
-  'CIVIC-02':
-    'Proof that the future has neighborhoods — and this one has better coffee.',
-  'CIVIC-03':
-    "48 inches of deterministic beauty. The algorithm didn't pick this street. You did.",
-  'FIELD-02': "Circuits don't run in straight lines. Neither should you.",
-  'SIGNAL-01':
-    'Phi-ratio construction. Because even your face deserves governed intelligence.',
-  'TRANSIT-01': 'Carry what matters. Leave the black boxes behind.',
-  'FIELD-01':
-    'Recycled synthetic. Deterministic design. Your weekend is now observable.',
-  'RESORT-01':
-    "Six placement prints. Zero hallucinations. You're the only model that matters here.",
-  'OPERATOR-01':
-    'The machine proposed the design. You approved it. That’s the whole doctrine.',
-};
-
-export function getSeriesATagline(title: string): string | null {
-  const codename = title.split('//')[0]?.trim().toUpperCase();
-  return codename ? SERIES_A_TAGLINES[codename] ?? null : null;
 }
 
 export function parseFeatureBullets(value?: string | null): string[] {
