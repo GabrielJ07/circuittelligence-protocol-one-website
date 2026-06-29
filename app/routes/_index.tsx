@@ -1,108 +1,38 @@
-import {Await, useLoaderData} from 'react-router';
-import type {Route} from './+types/_index';
-import {Suspense} from 'react';
-import {HeroSection} from '~/components/HeroSection';
-import {TextOverlaySection} from '~/components/TextOverlaySection';
-import {CategoryShop} from '~/components/CategoryShop';
-import {LifestyleParallax} from '~/components/LifestyleParallax';
-import {ProductCarousel} from '~/components/ProductCarousel';
-import {InventoryGrid} from '~/components/InventoryGrid';
+import type {MetaFunction} from 'react-router';
+import {Link} from 'react-router';
+import {Hero} from '~/components/Hero';
+import {EditorialBlocks} from '~/components/EditorialBlocks';
+import {ProductGrid} from '~/components/ProductGrid';
+import {BRAND, COLLECTION_HANDLE} from '~/lib/brand';
+import {SERIES_A_PRODUCTS} from '~/lib/series-a';
 
-export const meta: Route.MetaFunction = () => {
-  return [{title: 'Circuittelligence | Protocol:01'}];
-};
+export const meta: MetaFunction = () => [
+  {title: BRAND.title},
+  {
+    name: 'description',
+    content: 'Protocol:01 / Series-A commerce surface for Circuittelligence.',
+  },
+];
 
-export async function loader(args: Route.LoaderArgs) {
-  const deferredData = loadDeferredData(args);
-  return {...deferredData};
-}
-
-function loadDeferredData({context}: Route.LoaderArgs) {
-  const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY)
-    .catch((error: Error) => {
-      console.error(error);
-      return null;
-    });
-
-  return {
-    recommendedProducts,
-  };
-}
-
-export default function Homepage() {
-  const data = useLoaderData<typeof loader>();
-
+export default function IndexRoute() {
   return (
-    <div className="home">
-      <HeroSection />
+    <main>
+      <Hero />
 
-      <TextOverlaySection
-        eyebrow="PROTOCOL BETA"
-        title="The doctrine is open."
-        body="Protocol Beta extends governed intelligence into the field — hardware built for the operator who answers to no black box."
-        ctaText="[READ THE DOCTRINE]"
-        ctaHref="/signal"
-        align="left"
-      />
+      <section className="section-header">
+        <p className="eyebrow">Series-A register</p>
+        <h2>10 active artifacts</h2>
+        <p>
+          Canvas art, apparel, and accessories structured as a governed commerce surface.
+        </p>
+        <Link to={`/collections/${COLLECTION_HANDLE}`} className="inline-link">
+          Enter Series-A
+        </Link>
+      </section>
 
-      <TextOverlaySection
-        eyebrow="SERIES-A"
-        title="Funding the next deployment."
-        body="Series-A capital extends the runway for Protocol:01 — every payload deployed reinvests directly into the next system."
-        ctaText="[VIEW FUND]"
-        ctaHref="/series-a"
-        align="right"
-      />
+      <ProductGrid products={SERIES_A_PRODUCTS} />
 
-      <CategoryShop />
-
-      <LifestyleParallax />
-
-      <Suspense fallback={null}>
-        <Await resolve={data.recommendedProducts}>
-          {(response) => (
-            <ProductCarousel products={response?.products.nodes ?? []} />
-          )}
-        </Await>
-      </Suspense>
-
-      <Suspense fallback={null}>
-        <Await resolve={data.recommendedProducts}>
-          {(response) => (
-            <InventoryGrid products={response?.products.nodes ?? []} />
-          )}
-        </Await>
-      </Suspense>
-    </div>
+      <EditorialBlocks />
+    </main>
   );
 }
-
-const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    featuredImage {
-      id
-      url
-      altText
-      width
-      height
-    }
-  }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 8, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...RecommendedProduct
-      }
-    }
-  }
-` as const;
