@@ -1,12 +1,12 @@
 import {Link} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
-import type {RecommendedProductFragment} from 'storefrontapi.generated';
+import type {DepartmentProductFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 
 export function ProductCarousel({
   products,
 }: {
-  products: RecommendedProductFragment[];
+  products: DepartmentProductFragment[];
 }) {
   if (!products.length) return null;
   const [featured, ...rail] = products;
@@ -23,7 +23,7 @@ export function ProductCarousel({
   );
 }
 
-function FeaturedTile({product}: {product: RecommendedProductFragment}) {
+function FeaturedTile({product}: {product: DepartmentProductFragment}) {
   const url = useVariantUrl(product.handle);
   return (
     <Link to={url} className="product-carousel__featured">
@@ -42,7 +42,7 @@ function FeaturedTile({product}: {product: RecommendedProductFragment}) {
   );
 }
 
-function RailTile({product}: {product: RecommendedProductFragment}) {
+function RailTile({product}: {product: DepartmentProductFragment}) {
   const url = useVariantUrl(product.handle);
   return (
     <Link to={url} className="product-carousel__rail-item">

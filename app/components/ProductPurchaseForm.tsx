@@ -1,5 +1,6 @@
 import {useMemo, useState} from 'react';
 import {CartForm, Money} from '@shopify/hydrogen';
+import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 import {COMMERCE_LABELS} from '~/lib/brand';
 
 type ProductVariant = {
@@ -7,7 +8,7 @@ type ProductVariant = {
   title: string;
   availableForSale: boolean;
   selectedOptions?: Array<{name: string; value: string}>;
-  price: {amount: string; currencyCode: string};
+  price: {amount: string; currencyCode: CurrencyCode};
 };
 
 export function ProductPurchaseForm({variants, productCode}: {variants: ProductVariant[]; productCode?: string}) {

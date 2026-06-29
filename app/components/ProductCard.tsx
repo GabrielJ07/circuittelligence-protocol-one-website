@@ -1,5 +1,6 @@
 import {Link} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
+import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 import type {SeriesAProduct} from '~/lib/series-a';
 import {COMMERCE_LABELS} from '~/lib/brand';
 
@@ -10,7 +11,7 @@ type ShopifyProductCard = {
   productType?: string | null;
   availableForSale?: boolean | null;
   featuredImage?: {url: string; altText?: string | null; width?: number | null; height?: number | null} | null;
-  priceRange?: {minVariantPrice: {amount: string; currencyCode: string}};
+  priceRange?: {minVariantPrice: {amount: string; currencyCode: CurrencyCode}};
 };
 
 export function ProductCard({product}: {product: ShopifyProductCard | SeriesAProduct}) {

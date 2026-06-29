@@ -1,13 +1,13 @@
 import {Link} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
-import type {RecommendedProductFragment} from 'storefrontapi.generated';
+import type {DepartmentProductFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {NewsletterForm} from '~/components/NewsletterForm';
 
 export function InventoryGrid({
   products,
 }: {
-  products: RecommendedProductFragment[];
+  products: DepartmentProductFragment[];
 }) {
   return (
     <section className="inventory-grid">
@@ -21,7 +21,7 @@ export function InventoryGrid({
   );
 }
 
-function InventoryTile({product}: {product: RecommendedProductFragment}) {
+function InventoryTile({product}: {product: DepartmentProductFragment}) {
   const url = useVariantUrl(product.handle);
   return (
     <Link to={url} className="inventory-grid__item">

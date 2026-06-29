@@ -2,6 +2,7 @@ import {Link} from 'react-router';
 import {CartForm, Image, Money, useOptimisticCart} from '@shopify/hydrogen';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {COMMERCE_LABELS} from '~/lib/brand';
 
 export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | null}) {
   const cart = useOptimisticCart(originalCart);
@@ -11,9 +12,9 @@ export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | n
   if (!lines.length) {
     return (
       <div className="cart-drawer cart-drawer--empty">
-        <p>No payloads queued.</p>
-        <Link to="/shop-men" onClick={close} className="cart-drawer__browse">
-          BROWSE INVENTORY →
+        <p>{COMMERCE_LABELS.cart} empty.</p>
+        <Link to="/series-a" onClick={close} className="cart-drawer__browse">
+          {COMMERCE_LABELS.continueShopping} →
         </Link>
       </div>
     );
@@ -66,7 +67,7 @@ export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | n
       </ul>
       <footer className="cart-drawer__footer">
         <div className="cart-drawer__total">
-          Payload Valuation:{' '}
+          Subtotal:{' '}
           {cart?.cost?.subtotalAmount ? (
             <Money data={cart.cost.subtotalAmount} />
           ) : (
@@ -77,7 +78,7 @@ export function CartDrawer({cart: originalCart}: {cart: CartApiQueryFragment | n
           href={cart?.checkoutUrl ?? '#'}
           className="cart-drawer__deploy"
         >
-          [DEPLOY PAYLOAD]
+          [{COMMERCE_LABELS.checkout}]
         </a>
       </footer>
     </div>

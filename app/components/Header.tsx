@@ -18,7 +18,7 @@ export function Header() {
         <NavLink to="/doctrine">DOCTRINE</NavLink>
         <NavLink to="/services">SERVICES</NavLink>
         <NavLink to="/shop-men">SHOP</NavLink>
-        <NavLink to="/fund">FUND</NavLink>
+        <NavLink to="/series-a">FUND</NavLink>
       </nav>
       <div className="protocol-header__ctas">
         <button

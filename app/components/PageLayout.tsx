@@ -8,6 +8,7 @@ import type {
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header} from '~/components/Header';
+import {COMMERCE_LABELS} from '~/lib/brand';
 import {HeaderMenu} from '~/components/HeaderMenu';
 import {CartDrawer} from '~/components/CartDrawer';
 import {
@@ -50,17 +51,7 @@ export function PageLayout({
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
   return (
-    <Aside
-      type="cart"
-      heading={
-        <>
-          ACTIVE PAYLOADS{' '}
-          <span className="aside-heading__sub">
-            // Aerospace Tactical Logistics
-          </span>
-        </>
-      }
-    >
+    <Aside type="cart" heading={COMMERCE_LABELS.cart}>
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
