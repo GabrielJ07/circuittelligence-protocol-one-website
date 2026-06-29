@@ -1,27 +1,27 @@
 import {Link, Outlet, useRouteLoaderData} from 'react-router';
 import {BRAND, COMMERCE_LABELS} from '~/lib/brand';
 
-type RootLoaderData = {
+type RootData = {
   cart?: {
     totalQuantity?: number;
   } | null;
 };
 
 export function Layout() {
-  const rootData = useRouteLoaderData<RootLoaderData>('root');
+  const rootData = useRouteLoaderData<RootData>('root');
   const cartQuantity = rootData?.cart?.totalQuantity ?? 0;
 
   return (
-    <div className="site-shell">
+    <div className="site">
       <header className="site-header">
-        <Link to="/" className="brand-mark" aria-label={BRAND.title}>
-          <span>{BRAND.company}</span>
-          <small>{BRAND.protocol}</small>
+        <Link to="/" className="brand">
+          <strong>{BRAND.company}</strong>
+          <span>{BRAND.protocol}</span>
         </Link>
 
-        <nav className="site-nav" aria-label="Primary navigation">
+        <nav className="nav" aria-label="Primary">
           <Link to="/collections/series-a-protocol-01">Series-A</Link>
-          <Link to="/pages/protocol-01">Protocol:01</Link>
+          <Link to="/pages/knowledge-base">Knowledge Base</Link>
           <Link to="/cart">
             {COMMERCE_LABELS.cart}
             {cartQuantity > 0 ? ` (${cartQuantity})` : ''}
@@ -31,7 +31,7 @@ export function Layout() {
 
       <Outlet />
 
-      <footer className="site-footer">
+      <footer className="footer">
         <p>{BRAND.close}</p>
       </footer>
     </div>

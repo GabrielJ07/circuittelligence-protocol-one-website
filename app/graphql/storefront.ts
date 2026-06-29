@@ -1,5 +1,5 @@
 export const COLLECTION_QUERY = `#graphql
-  query SeriesACollection($handle: String!) {
+  query CollectionByHandle($handle: String!) {
     collection(handle: $handle) {
       id
       title
@@ -32,10 +32,6 @@ export const COLLECTION_QUERY = `#graphql
             nodes {
               id
               availableForSale
-              price {
-                amount
-                currencyCode
-              }
             }
           }
         }
@@ -63,26 +59,10 @@ export const PRODUCT_QUERY = `#graphql
         width
         height
       }
-      images(first: 12) {
-        nodes {
-          url
-          altText
-          width
-          height
-        }
-      }
-      options {
-        name
-        values
-      }
       selectedOrFirstAvailableVariant {
         id
         title
         availableForSale
-        selectedOptions {
-          name
-          value
-        }
         price {
           amount
           currencyCode

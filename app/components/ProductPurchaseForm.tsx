@@ -2,14 +2,11 @@ import {useMemo, useState} from 'react';
 import {CartForm, Money} from '@shopify/hydrogen';
 import {COMMERCE_LABELS} from '~/lib/brand';
 
-type ProductVariant = {
+type Variant = {
   id: string;
   title: string;
   availableForSale: boolean;
-  selectedOptions: Array<{
-    name: string;
-    value: string;
-  }>;
+  selectedOptions?: Array<{name: string; value: string}>;
   price: {
     amount: string;
     currencyCode: string;
@@ -20,23 +17,19 @@ export function ProductPurchaseForm({
   variants,
   productCode,
 }: {
-  variants: ProductVariant[];
+  variants: Variant[];
   productCode?: string;
 }) {
-  const firstAvailableVariant = variants.find((variant) => variant.availableForSale) ?? variants[0];
-  const [variantId, setVariantId] = useState(firstAvailableVariant?.id ?? '');
+  const firstAvailable = variants.find((variant) => variant.availableForSale) ?? variants[0];
+  const [variantId, setVariantId] = useState(firstAvailable?.id ?? '');
 
   const selectedVariant = useMemo(
-    () => variants.find((variant) => variant.id === variantId) ?? firstAvailableVariant,
-    [firstAvailableVariant, variantId, variants],
+    () => variants.find((variant) => variant.id === variantId) ?? firstAvailable,
+    [firstAvailable, variantId, variants],
   );
 
   if (!selectedVariant) {
-    return (
-      <div className="purchase-panel">
-        <p>{COMMERCE_LABELS.soldOut}</p>
-      </div>
-    );
+    return <p>{COMMERCE_LABELS.soldOut}</p>;
   }
 
   const lines = [
@@ -52,13 +45,9 @@ export function ProductPurchaseForm({
   ];
 
   return (
-    <div className="purchase-panel">
+    <section className="purchase-panel">
       <label htmlFor="variant">Deployment configuration</label>
-      <select
-        id="variant"
-        value={variantId}
-        onChange={(event) => setVariantId(event.target.value)}
-      >
+      <select id="variant" value={variantId} onChange={(event) => setVariantId(event.target.value)}>
         {variants.map((variant) => (
           <option key={variant.id} value={variant.id} disabled={!variant.availableForSale}>
             {variant.title} — {variant.availableForSale ? COMMERCE_LABELS.inStock : COMMERCE_LABELS.soldOut}
@@ -66,21 +55,19 @@ export function ProductPurchaseForm({
         ))}
       </select>
 
-      <p className="product-price">
-        <Money data={selectedVariant.price} />
-      </p>
+      <p className="price"><Money data={selectedVariant.price} /></p>
 
       <CartForm route="/cart" action={CartForm.ACTIONS.LinesAdd} inputs={{lines}}>
         {(fetcher) => (
           <button
-            className="cta"
             type="submit"
+            className="button"
             disabled={!selectedVariant.availableForSale || fetcher.state !== 'idle'}
           >
-            {selectedVariant.availableForSale ? COMMERCE_LABELS.addToCart : COMMERCE_LABELS.soldOut}
+            {COMMERCE_LABELS.addToCart}
           </button>
         )}
       </CartForm>
-    </div>
+    </section>
   );
 }

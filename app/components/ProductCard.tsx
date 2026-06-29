@@ -3,7 +3,7 @@ import {Image, Money} from '@shopify/hydrogen';
 import type {SeriesAProduct} from '~/lib/series-a';
 import {COMMERCE_LABELS} from '~/lib/brand';
 
-type ShopifyProductCard = {
+type ShopifyProduct = {
   id: string;
   title: string;
   handle: string;
@@ -23,45 +23,35 @@ type ShopifyProductCard = {
   };
 };
 
-export function ProductCard({
-  product,
-}: {
-  product: ShopifyProductCard | SeriesAProduct;
-}) {
-  const isShopifyProduct = 'id' in product;
-  const handle = product.handle;
-  const title = product.title;
-  const productType = isShopifyProduct ? product.productType : product.category;
-  const isAvailable = isShopifyProduct ? product.availableForSale : true;
+export function ProductCard({product}: {product: ShopifyProduct | SeriesAProduct}) {
+  const live = 'id' in product;
+  const label = live ? product.productType : product.category;
+  const available = live ? product.availableForSale : true;
 
   return (
     <article className="product-card">
-      <Link to={`/products/${handle}`}>
-        {'featuredImage' in product && product.featuredImage ? (
-          <Image
-            data={product.featuredImage}
-            aspectRatio="4/5"
-            sizes="(min-width: 900px) 25vw, 100vw"
-          />
+      <Link to={`/products/${product.handle}`}>
+        {live && product.featuredImage ? (
+          <Image data={product.featuredImage} aspectRatio="4/5" sizes="(min-width: 900px) 25vw, 100vw" />
         ) : (
-          <div className="product-card__placeholder" aria-hidden="true">
+          <div className="product-placeholder">
             <span>{'code' in product ? product.code : 'SERIES-A'}</span>
           </div>
         )}
 
-        <div className="product-card__body">
-          <p className="eyebrow">{productType}</p>
-          <h3>{title}</h3>
-          <div className="product-card__meta">
+        <div className="product-card-body">
+          <p className="eyebrow">{label}</p>
+          <h3>{product.title}</h3>
+          <p className="product-meta">
             <span>
-              {isShopifyProduct && product.priceRange ? (
+              {live && product.priceRange ? (
                 <Money data={product.priceRange.minVariantPrice} />
               ) : 'price' in product ? (
                 product.price
               ) : null}
             </span>
-            <span>{isAvailable ? COMMERCE_LABELS.inStock : COMMERCE_LABELS.soldOut}</span>
-          </div>
+            <span>{available ? COMMERCE_LABELS.inStock : COMMERCE_LABELS.soldOut}</span>
+          </p>
         </div>
       </Link>
     </article>

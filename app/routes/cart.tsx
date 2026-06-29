@@ -1,9 +1,9 @@
 import type {ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from 'react-router';
-import {data, Link, redirect, useLoaderData} from 'react-router';
+import {data, Link, useLoaderData} from 'react-router';
 import {CartForm, Money, OptimisticInput, useOptimisticCart, useOptimisticData} from '@shopify/hydrogen';
 import type {Cart, CartLine} from '@shopify/hydrogen/storefront-api-types';
 import invariant from 'tiny-invariant';
-import {COMMERCE_LABELS} from '~/lib/brand';
+import {COLLECTION_HANDLE, COMMERCE_LABELS} from '~/lib/brand';
 
 export const meta: MetaFunction = () => [
   {title: COMMERCE_LABELS.cart},
@@ -23,36 +23,30 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   invariant(action, 'Cart action is required.');
 
-  let status = 200;
   let result;
+  let status = 200;
 
   switch (action) {
     case CartForm.ACTIONS.LinesAdd:
       result = await cart.addLines(inputs.lines);
       status = 303;
       break;
-
     case CartForm.ACTIONS.LinesUpdate:
       result = await cart.updateLines(inputs.lines);
       break;
-
     case CartForm.ACTIONS.LinesRemove:
       result = await cart.removeLines(inputs.lineIds);
       break;
-
     case CartForm.ACTIONS.DiscountCodesUpdate:
       result = await cart.updateDiscountCodes(inputs.discountCodes);
       break;
-
     default:
       throw new Response(`Unsupported cart action: ${action}`, {status: 400});
   }
 
-  const cartId = result?.cart?.id;
-  const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();
+  const headers = result?.cart?.id ? cart.setCartId(result.cart.id) : new Headers();
 
   const redirectTo = formData.get('redirectTo');
-
   if (typeof redirectTo === 'string') {
     status = 303;
     headers.set('Location', redirectTo);
@@ -63,74 +57,63 @@ export async function action({request, context}: ActionFunctionArgs) {
 
 export default function CartRoute() {
   const {cart} = useLoaderData<typeof loader>();
+  const optimisticCart = useOptimisticCart(cart as Cart | null);
 
-  return (
-    <main>
-      <header className="page-header">
-        <p className="eyebrow">Protocol:01</p>
-        <h1>{COMMERCE_LABELS.cart}</h1>
-      </header>
-
-      <CartView cart={cart} />
-    </main>
-  );
-}
-
-function CartView({cart: originalCart}: {cart: Cart | null}) {
-  const cart = useOptimisticCart(originalCart);
-
-  if (!cart?.lines?.nodes?.length) {
+  if (!optimisticCart?.lines?.nodes?.length) {
     return (
-      <section className="empty-cart">
-        <p>No active deployments.</p>
-        <Link className="cta secondary" to="/collections/series-a-protocol-01">
+      <main className="page">
+        <header className="section-head">
+          <p className="eyebrow">Protocol:01</p>
+          <h1>{COMMERCE_LABELS.cart}</h1>
+          <p>No active deployments.</p>
+        </header>
+        <Link className="button secondary" to={`/collections/${COLLECTION_HANDLE}`}>
           {COMMERCE_LABELS.continueShopping}
         </Link>
-      </section>
+      </main>
     );
   }
 
   return (
-    <section className="cart-layout">
-      <div className="cart-lines">
-        {cart.lines.nodes.map((line) => (
-          <CartLineItem key={line.id} line={line as CartLine & {isOptimistic?: boolean}} />
-        ))}
-      </div>
+    <main className="page">
+      <header className="section-head">
+        <p className="eyebrow">Protocol:01</p>
+        <h1>{COMMERCE_LABELS.cart}</h1>
+      </header>
 
-      <aside className="cart-summary">
-        <h2>Deployment summary</h2>
+      <section className="cart-layout">
+        <div className="cart-lines">
+          {optimisticCart.lines.nodes.map((line) => (
+            <CartLineItem key={line.id} line={line as CartLine & {isOptimistic?: boolean}} />
+          ))}
+        </div>
 
-        {cart.cost?.subtotalAmount ? (
-          <p className="cart-total">
-            <span>Subtotal</span>
-            <Money data={cart.cost.subtotalAmount} />
-          </p>
-        ) : null}
+        <aside className="cart-summary">
+          <h2>Deployment summary</h2>
+          {optimisticCart.cost?.subtotalAmount ? (
+            <p className="cart-total">
+              <span>Subtotal</span>
+              <Money data={optimisticCart.cost.subtotalAmount} />
+            </p>
+          ) : null}
 
-        {cart.checkoutUrl ? (
-          <a className="cta" href={cart.checkoutUrl}>
-            {COMMERCE_LABELS.checkout}
-          </a>
-        ) : (
-          <p>Checkout URL unavailable.</p>
-        )}
-
-        <p className="fine-print">
-          Taxes, delivery, and payment resolve inside Shopify checkout.
-        </p>
-      </aside>
-    </section>
+          {optimisticCart.checkoutUrl ? (
+            <a className="button" href={optimisticCart.checkoutUrl}>
+              {COMMERCE_LABELS.checkout}
+            </a>
+          ) : (
+            <p>Checkout URL unavailable.</p>
+          )}
+        </aside>
+      </section>
+    </main>
   );
 }
 
 function CartLineItem({line}: {line: CartLine & {isOptimistic?: boolean}}) {
   const optimisticData = useOptimisticData<{action: string}>(line.id);
-  const hidden = optimisticData?.action === 'remove';
 
-  if (hidden) return null;
-
-  const quantity = line.quantity;
+  if (optimisticData?.action === 'remove') return null;
 
   return (
     <article className="cart-line">
@@ -142,51 +125,27 @@ function CartLineItem({line}: {line: CartLine & {isOptimistic?: boolean}}) {
         {line.cost?.totalAmount ? <Money data={line.cost.totalAmount} /> : null}
       </div>
 
-      <div className="cart-line__actions">
+      <div className="cart-actions">
         <CartForm
           route="/cart"
           action={CartForm.ACTIONS.LinesUpdate}
-          inputs={{
-            lines: [
-              {
-                id: line.id,
-                quantity: Math.max(1, quantity - 1),
-              },
-            ],
-          }}
+          inputs={{lines: [{id: line.id, quantity: Math.max(1, line.quantity - 1)}]}}
         >
-          <button type="submit" disabled={line.isOptimistic || quantity <= 1}>
-            −
-          </button>
+          <button type="submit" disabled={line.isOptimistic || line.quantity <= 1}>−</button>
         </CartForm>
 
-        <span>{quantity}</span>
+        <span>{line.quantity}</span>
 
         <CartForm
           route="/cart"
           action={CartForm.ACTIONS.LinesUpdate}
-          inputs={{
-            lines: [
-              {
-                id: line.id,
-                quantity: quantity + 1,
-              },
-            ],
-          }}
+          inputs={{lines: [{id: line.id, quantity: line.quantity + 1}]}}
         >
-          <button type="submit" disabled={line.isOptimistic}>
-            +
-          </button>
+          <button type="submit" disabled={line.isOptimistic}>+</button>
         </CartForm>
 
-        <CartForm
-          route="/cart"
-          action={CartForm.ACTIONS.LinesRemove}
-          inputs={{lineIds: [line.id]}}
-        >
-          <button type="submit" disabled={line.isOptimistic}>
-            Remove
-          </button>
+        <CartForm route="/cart" action={CartForm.ACTIONS.LinesRemove} inputs={{lineIds: [line.id]}}>
+          <button type="submit" disabled={line.isOptimistic}>Remove</button>
           <OptimisticInput id={line.id} data={{action: 'remove'}} />
         </CartForm>
       </div>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Base — Circuittelligence // Protocol:01 // Series-A</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&family=JetBrains+Mono:wght@400;700&family=Fraunces:ital@1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --void:     #0D1321;
+    --navy:     #111827;
+    --gold:     #FFE192;
+    --gold-dim: #C9A84C;
+    --cyan:     #7BD0FF;
+    --stone:    #8A8F99;
+    --white:    #F4F3F0;
+    --rule:     rgba(255,225,146,0.12);
+    --rule-faint: rgba(255,225,146,0.06);
+  }
+
+  body {
+    background: var(--void);
+    color: var(--white);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 3rem 2rem 5rem;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ───────────────────────── */
+
+  .kb-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 0.3rem;
+  }
+
+  .kb-meta {
+    font-size: 13px;
+    color: var(--stone);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── DIVIDER ──────────────────────── */
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 2.5rem 0;
+  }
+
+  /* ── SECTION STRUCTURE ────────────── */
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--white);
+    line-height: 1.25;
+  }
+
+  p {
+    color: var(--stone);
+    font-size: 14px;
+    line-height: 1.85;
+    margin-bottom: 1.1rem;
+  }
+
+  p strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .pull-quote {
+    border-left: 2px solid var(--gold-dim);
+    padding: 0.85rem 1.1rem;
+    margin: 1.5rem 0;
+    background: rgba(255,225,146,0.04);
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+    color: var(--white);
+    font-style: italic;
+  }
+
+  /* ── PRIMITIVE GRID ───────────────── */
+
+  .primitive-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .primitive-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .primitive-card {
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
+  .prim-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .prim-fn {
+    font-size: 12px;
+    color: var(--white);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .prim-desc {
+    font-size: 11.5px;
+    color: var(--stone);
+    line-height: 1.6;
+  }
+
+  /* ── LOOP BAR ─────────────────────── */
+
+  .loop-bar {
+    display: flex;
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .loop-step {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    border-right: 1px solid var(--rule);
+  }
+  .loop-step:last-child { border-right: none; }
+
+  .loop-word {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .loop-prim {
+    font-size: 11px;
+    color: var(--stone);
+  }
+
+  /* ── TWO-COL GRID ─────────────────── */
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } }
+
+  .info-card {
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+
+  .info-card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .info-card-value {
+    font-size: 13px;
+    color: var(--white);
+    line-height: 1.65;
+  }
+
+  /* ── LANGUAGE OVERRIDE TABLE ──────── */
+
+  .override-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+    margin: 1.5rem 0;
+  }
+
+  .override-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--rule-faint);
+    font-size: 12.5px;
+  }
+
+  .o-from {
+    color: var(--stone);
+    text-decoration: line-through;
+    flex: 1;
+  }
+
+  .o-arr {
+    color: var(--gold-dim);
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .o-to {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    flex: 1.3;
+    text-align: right;
+  }
+
+  /* ── PRODUCT TABLE ────────────────── */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 12.5px;
+  }
+
+  thead th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    font-weight: 400;
+    text-align: left;
+    padding: 0 0.75rem 0.65rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  tbody td {
+    padding: 0.55rem 0.75rem 0.55rem 0;
+    color: var(--stone);
+    border-bottom: 1px solid var(--rule-faint);
+    vertical-align: top;
+  }
+
+  tbody td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+  }
+
+  .td-name { color: var(--white); }
+
+  /* ── DESIGN TOKENS ────────────────── */
+
+  .token-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 1.25rem 0;
+  }
+
+  .token-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 5px 10px;
+  }
+
+  .t-swatch {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+
+  .t-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+  }
+
+  .t-hex {
+    font-size: 11px;
+    color: var(--stone);
+  }
+
+  /* ── MONO BLOCK ───────────────────── */
+
+  .mono-block {
+    background: var(--navy);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--gold-dim);
+    margin: 1rem 0;
+    word-break: break-all;
+  }
+
+  /* ── PROHIBITED ───────────────────── */
+
+  .prohibited-list {
+    font-size: 13px;
+    color: var(--stone);
+    margin: 1rem 0 1rem 0;
+    list-style: none;
+  }
+
+  .prohibited-list li {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule-faint);
+  }
+
+  .prohibited-list li::before {
+    content: "✕  ";
+    color: #E24B4A;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── CLOSER ───────────────────────── */
+
+  .closer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+</style>
+</head>
+<body>
+
+<div class="kb-eyebrow">Knowledge Base — Internal Reference</div>
+<h1>Circuittelligence // Protocol:01 // Series-A</h1>
+<p class="kb-meta">Canonical definitions. Locked. Do not rewrite.</p>
+
+<hr>
+
+<!-- ─── SECTION 01: CIRCUITTELLIGENCE ─────────────────────────────────────── -->
+
+<div class="section-head">
+  <span class="section-num">01</span>
+  <h2>What is Circuittelligence?</h2>
+</div>
+
+<p>
+  Circuittelligence is a <strong>San Diego-based AI infrastructure company</strong> founded by Gabriel J. The company's governing philosophy is <strong>Industrial Humanism</strong> — a constraint-first engineering doctrine developed in direct response to the practical failures of general-purpose AI tools in real operational environments.
+</p>
+
+<p>
+  Industrial Humanism is an engineering response, not a marketing position. Where most AI products ask "what can the model do?", Circuittelligence asks "what should the model be allowed to do?" Constraints are not limitations placed on a system — they are the system itself. <strong>The constraint is the point.</strong>
+</p>
+
+<div class="pull-quote">"Beautiful intelligence, bounded."</div>
+
+<p>
+  The company is built around four <strong>canonical architectural primitives</strong>. These are not product names or feature labels. They are the foundational components of a closed epistemological loop through which governed AI behavior is designed, executed, and refined. Their classical origins are intentional.
+</p>
+
+<div class="primitive-grid">
+  <div class="primitive-card">
+    <span class="prim-name">LOCI</span>
+    <span class="prim-fn">Memory</span>
+    <span class="prim-desc">Place. The system's ability to locate and retain context over time. Compounding value as signal accumulates.</span>
+  </div>
+  <div class="primitive-card">
+    <span class="prim-name">NOMEN</span>
+    <span class="prim-fn">Archetype discovery</span>
+    <span class="prim-desc">Name. Pattern identification. The system recognizes roles, types, and archetypes within the signal space.</span>
+  </div>
+  <div class="primitive-card">
+    <span class="prim-name">NOSTOS</span>
+    <span class="prim-fn">Orchestration</span>
+    <span class="prim-desc">Journey. The governed execution path — how agents move through bounded sequences toward defined outcomes.</span>
+  </div>
+  <div class="primitive-card">
+    <span class="prim-name">KOSMOS</span>
+    <span class="prim-fn">Constraints</span>
+    <span class="prim-desc">Order. The rule layer that bounds everything operating within it. Not limits — architecture.</span>
+  </div>
+</div>
+
+<p style="font-size: 13px;">The loop these four primitives form:</p>
+
+<div class="loop-bar">
+  <div class="loop-step"><span class="loop-word">Place</span><span class="loop-prim">LOCI</span></div>
+  <div class="loop-step"><span class="loop-word">Name</span><span class="loop-prim">NOMEN</span></div>
+  <div class="loop-step"><span class="loop-word">Journey</span><span class="loop-prim">NOSTOS</span></div>
+  <div class="loop-step"><span class="loop-word">Order</span><span class="loop-prim">KOSMOS</span></div>
+</div>
+
+<p style="font-size: 13px; color: var(--stone);">
+  The emergent output of this loop operating correctly is <strong style="color:var(--white);">LOGOS</strong> — Aristotle's third mode of persuasion. LOGOS is not a fifth primitive. It is the product of the first four functioning as designed.
+</p>
+
+<p>
+  Gabriel's professional background includes <strong>15+ years of Fortune 500 operations leadership</strong> across Nederlander, Spectrum, Bloomingdale's, Ralph Lauren, and Target. Circuittelligence was founded after AI tools repeatedly failed in operational practice. This is not a thesis. It is a documented engineering response.
+</p>
+
+<div class="two-col">
+  <div class="info-card">
+    <div class="info-card-label">Brand tagline</div>
+    <div class="info-card-value">"Beautiful Intelligence, Bounded."</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Brand closer</div>
+    <div class="info-card-value">"The future has neighborhoods."</div>
+  </div>
+</div>
+
+<p style="font-size:13px;">
+  The San Diego neighborhood geography — Hillcrest, North Park, University Heights, Normal Heights, Adams Ave — is not metaphor for marketing. These neighborhoods function as <strong>real-world models of human-scale governed systems</strong> and directly inform both the brand philosophy and the product naming convention in Series-A.
+</p>
+
+<hr>
+
+<!-- ─── SECTION 02: PROTOCOL:01 ────────────────────────────────────────────── -->
+
+<div class="section-head">
+  <span class="section-num">02</span>
+  <h2>What is Protocol:01?</h2>
+</div>
+
+<p>
+  Protocol:01 is the <strong>first public campaign surface</strong> for Circuittelligence. It is not a product line in the conventional retail sense. It is an <strong>awareness engine and physical expression of the Industrial Humanism doctrine</strong>. The store is a proof of concept in governed commerce — every design decision, every piece of copy, every interface label enacts the constraint-first philosophy it represents.
+</p>
+
+<div class="pull-quote">Protocol:01 is Layer 2 of the Circuittelligence campaign-first web architecture — a commerce extension of the institutional brand, not a standalone store.</div>
+
+<p>
+  The store operates on deliberate campaign logic: it <strong>opens and closes</strong>. Products are <strong>deployed</strong>, not browsed. This is reflected in the language override system applied across the Shopify interface:
+</p>
+
+<div class="override-grid">
+  <div>
+    <div class="override-row"><span class="o-from">Add to cart</span><span class="o-arr">→</span><span class="o-to">AUTHORIZE DEPLOY →</span></div>
+    <div class="override-row"><span class="o-from">Cart</span><span class="o-arr">→</span><span class="o-to">DEPLOYMENT QUEUE</span></div>
+    <div class="override-row"><span class="o-from">Checkout</span><span class="o-arr">→</span><span class="o-to">CONFIRM DEPLOYMENT →</span></div>
+    <div class="override-row"><span class="o-from">Sold out</span><span class="o-arr">→</span><span class="o-to">PROTOCOL CLOSED</span></div>
+  </div>
+  <div>
+    <div class="override-row"><span class="o-from">In stock</span><span class="o-arr">→</span><span class="o-to">AUTHORIZED</span></div>
+    <div class="override-row"><span class="o-from">Shipping</span><span class="o-arr">→</span><span class="o-to">FULFILLMENT WINDOW</span></div>
+    <div class="override-row"><span class="o-from">Search</span><span class="o-arr">→</span><span class="o-to">SEARCH PROTOCOL</span></div>
+    <div class="override-row"><span class="o-from">Continue shopping</span><span class="o-arr">→</span><span class="o-to">RETURN TO SERIES-A</span></div>
+  </div>
+</div>
+
+<p>The campaign architecture spans two layers:</p>
+
+<div class="two-col">
+  <div class="info-card">
+    <div class="info-card-label">Layer 1 — Institutional</div>
+    <div class="info-card-value">circuittelligence.com — institutional shell and campaign pages. Built on Cloudflare Workers / Astro / SonicJS.</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Layer 2 — Commerce</div>
+    <div class="info-card-value">shop.circuittelligence.com — Protocol:01 / Series-A commerce surface. Shopify, fulfilled via Printful.</div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="info-card">
+    <div class="info-card-label">Universal label tagline</div>
+    <div class="info-card-value">"The constraint is the point."</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Label / PDP sub-tagline</div>
+    <div class="info-card-value">"Engineered for the operator. Worn by the human."</div>
+  </div>
+</div>
+
+<p style="font-size:13px;">
+  The target personas for Protocol:01 commerce communication are two:
+</p>
+
+<div class="two-col">
+  <div class="info-card">
+    <div class="info-card-label">SME Operator</div>
+    <div class="info-card-value">Practical. Wants governed systems. No magic, no surprises. Responds to architecture and discipline.</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Meaning-Seeker / Urban Futurist</div>
+    <div class="info-card-value">Wants "Future Relief" — optimistic, human-centered, neighborhood-rooted. Responds to doctrine made physical.</div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ─── SECTION 03: SERIES-A ───────────────────────────────────────────────── -->
+
+<div class="section-head">
+  <span class="section-num">03</span>
+  <h2>What is Series-A?</h2>
+</div>
+
+<p>
+  <strong>Series-A</strong> is the name of the debut collection within Protocol:01. The full canonical collection name is <strong>Series-A — Protocol:01</strong>. The name is not a financial term — it is a deliberate reference to the concept of a disciplined first iteration. Version-one thinking applied to physical objects.
+</p>
+
+<p>
+  Series-A contains <strong>10 active products</strong> across canvas art, apparel, and accessories. Each product carries a coded designation — category prefix, dash, number — that reflects the same naming logic governing the underlying infrastructure doctrine. Products are not fashion items. They are artifacts of a governance philosophy made wearable and displayable.
+</p>
+
+<div class="mono-block">Collection GID: gid://shopify/Collection/291819716704 — Sort: MANUAL</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Title</th>
+      <th>Price</th>
+      <th>Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>CIVIC-01</td><td class="td-name">Hillcrest Node (Canvas)</td><td>$295</td><td>Art</td></tr>
+    <tr><td>CIVIC-02</td><td class="td-name">North Park Signal (Canvas)</td><td>$295</td><td>Art</td></tr>
+    <tr><td>CIVIC-03</td><td class="td-name">University Heights Grid (Canvas)</td><td>$295</td><td>Art</td></tr>
+    <tr><td>RESORT-01</td><td class="td-name">Systems Button Shirt — Titanium</td><td>$168</td><td>Apparel</td></tr>
+    <tr><td>RESORT-01</td><td class="td-name">Systems Button Shirt — Space</td><td>$168</td><td>Apparel</td></tr>
+    <tr><td>OPERATOR-01</td><td class="td-name">Oversized Systems Tee</td><td>$118</td><td>Apparel</td></tr>
+    <tr><td>FIELD-01</td><td class="td-name">Civic Mesh Short</td><td>$128</td><td>Apparel</td></tr>
+    <tr><td>FIELD-02</td><td class="td-name">Long Athletic Systems Short</td><td>$138</td><td>Apparel</td></tr>
+    <tr><td>SIGNAL-01</td><td class="td-name">Civic Signal Bandana</td><td>$48</td><td>Accessories</td></tr>
+    <tr><td>TRANSIT-01</td><td class="td-name">Oversized Weekender</td><td>$98</td><td>Accessories</td></tr>
+  </tbody>
+</table>
+
+<p>
+  The CIVIC product codes map directly to San Diego neighborhoods — Hillcrest, North Park, University Heights — as factual geographic references for a philosophy that treats human-scale governed environments as architectural models for AI systems. This is the brand's governing thesis rendered as visual art and sold at the same price point.
+</p>
+
+<hr>
+
+<!-- ─── SECTION 04: BRAND AND DESIGN SYSTEM ────────────────────────────────── -->
+
+<div class="section-head">
+  <span class="section-num">04</span>
+  <h2>Brand and design system</h2>
+</div>
+
+<p>Locked across all surfaces. Do not deviate. Do not reinterpret.</p>
+
+<div class="token-row">
+  <div class="token-chip"><div class="t-swatch" style="background:#0D1321;"></div><span class="t-name">VOID NAVY</span><span class="t-hex">#0D1321</span></div>
+  <div class="token-chip"><div class="t-swatch" style="background:#111827;"></div><span class="t-name">NAVY</span><span class="t-hex">#111827</span></div>
+  <div class="token-chip"><div class="t-swatch" style="background:#FFE192;"></div><span class="t-name">ELECTRIC GOLD</span><span class="t-hex">#FFE192</span></div>
+  <div class="token-chip"><div class="t-swatch" style="background:#C9A84C;"></div><span class="t-name">GOLD DIM</span><span class="t-hex">#C9A84C</span></div>
+  <div class="token-chip"><div class="t-swatch" style="background:#8A8F99;"></div><span class="t-name">STONE</span><span class="t-hex">#8A8F99</span></div>
+  <div class="token-chip"><div class="t-swatch" style="background:#F4F3F0; border-color: rgba(0,0,0,0.15);"></div><span class="t-name">OFF-WHITE</span><span class="t-hex">#F4F3F0</span></div>
+  <div class="token-chip"><div class="t-swatch" style="background:#7BD0FF;"></div><span class="t-name">CYAN</span><span class="t-hex">#7BD0FF</span></div>
+</div>
+
+<div class="two-col" style="margin-top:1rem;">
+  <div class="info-card">
+    <div class="info-card-label">Display</div>
+    <div class="info-card-value" style="font-size:12px;">Plus Jakarta Sans 800<br>letter-spacing: -0.03em</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Mono labels</div>
+    <div class="info-card-value" style="font-size:12px; font-family:'JetBrains Mono',monospace; letter-spacing:0.1em;">JetBrains Mono — ALL CAPS<br>letter-spacing: 0.15em</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Body</div>
+    <div class="info-card-value" style="font-size:12px;">Plus Jakarta Sans 400<br>line-height: 1.7</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Editorial accent</div>
+    <div class="info-card-value" style="font-size:12px; font-style:italic; font-family:'Fraunces',serif;">Fraunces italic — pull quotes only, used sparingly</div>
+  </div>
+</div>
+
+<p style="font-size:13px; margin-top:1rem;">
+  <strong>Visual composition:</strong> Phi-grid — major column 61.8% / minor 38.2%. Noise overlay: fractalNoise SVG at opacity 0.04, fixed position. Gold glow on CTAs: <code style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gold-dim);">box-shadow: 0 0 24px rgba(255,225,146,0.2)</code>. Glassmorphism panels on campaign surfaces: <code style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gold-dim);">backdrop-filter: blur(12px)</code> + <code style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gold-dim);">rgba(17,24,39,0.7)</code>.
+</p>
+
+<p style="font-size:13px;"><strong>Label design:</strong> Phi-grid composition. Void Navy + Electric Gold. Human silhouette.</p>
+
+<p style="font-size:13px; margin-bottom:0.5rem;"><strong>Prohibited language and style:</strong></p>
+<ul class="prohibited-list">
+  <li>"Revolutionary"</li>
+  <li>"Safe" (as a feature claim)</li>
+  <li>"Guardrails"</li>
+  <li>Exclamation points</li>
+  <li>Passive voice</li>
+  <li>Hype vocabulary: "amazing," "incredible," "game-changing"</li>
+</ul>
+
+<hr>
+
+<!-- ─── SECTION 05: VOICE AND COPY GOVERNANCE ──────────────────────────────── -->
+
+<div class="section-head">
+  <span class="section-num">05</span>
+  <h2>Voice and copy governance</h2>
+</div>
+
+<p>
+  The commerce register for Protocol:01 and Series-A follows the same governing rules as the full Circuittelligence brand voice. Institutional calm that cracks slightly into warmth on individual product lines. Dry wit is permitted — never precious, never loud.
+</p>
+
+<div class="two-col">
+  <div class="info-card">
+    <div class="info-card-label">Voice register</div>
+    <div class="info-card-value">Sovereign Account — Evidence-Led Peer. Controlled. Declarative. Dry.</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Copy rules</div>
+    <div class="info-card-value">No exclamation points. No hype. Active voice. No passive. No interrogation.</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Canonical system close</div>
+    <div class="info-card-value">"System Nominal. Protocol Authorized."</div>
+  </div>
+  <div class="info-card">
+    <div class="info-card-label">Structural model</div>
+    <div class="info-card-value">Three-beat: Diagnosis → Architecture → Sovereignty</div>
+  </div>
+</div>
+
+<p style="font-size:13px; margin-top:1rem;">
+  All per-product copy lines are locked. The Founder's Observation beat is Gabriel's independent contribution and must never be written by any external agent or tool.
+</p>
+
+<div class="closer">System Nominal. Protocol Authorized.</div>
+
+</body>
+</html>
