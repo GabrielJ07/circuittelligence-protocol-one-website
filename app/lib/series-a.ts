@@ -12,7 +12,7 @@ export const SERIES_A_PRODUCTS: SeriesAProduct[] = [
     "title": "Hillcrest Node (Canvas)",
     "price": "$295",
     "category": "Art",
-    "handle": "hillcrest-node-canvas"
+    "handle": "canvas"
   },
   {
     "code": "CIVIC-02",

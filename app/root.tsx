@@ -1,45 +1,9 @@
-import type {LinksFunction, LoaderFunctionArgs, MetaFunction} from 'react-router';
-import {Links, Meta, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteError} from 'react-router';
+import type {LinksFunction,LoaderFunctionArgs,MetaFunction} from 'react-router';
+import {Links,Meta,Scripts,ScrollRestoration,isRouteErrorResponse,useRouteError} from 'react-router';
 import {Layout} from '~/components/Layout';
-import {BRAND} from '~/lib/brand';
 import styles from '~/styles/app.css?url';
-
-export const links: LinksFunction = () => [
-  {rel: 'stylesheet', href: styles},
-  {rel: 'preconnect', href: 'https://cdn.shopify.com'},
-  {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
-  {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
-  {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&family=JetBrains+Mono:wght@400;700&family=Fraunces:ital@1&display=swap'},
-];
-
-export const meta: MetaFunction = () => [
-  {title: BRAND.pageTitle},
-  {name: 'description', content: 'Protocol:01 / Series-A Hydrogen storefront.'},
-];
-
-export async function loader({context}: LoaderFunctionArgs) {
-  return {cart: await context.cart.get()};
-}
-
-export default function App() {
-  return (
-    <html lang="en">
-      <head><meta charSet="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><Meta /><Links /></head>
-      <body><Layout /><ScrollRestoration /><Scripts /></body>
-    </html>
-  );
-}
-
-export function ErrorBoundary() {
-  const error = useRouteError();
-  let title = 'Protocol exception';
-  let message = 'Unexpected storefront state.';
-  if (isRouteErrorResponse(error)) { title = `${error.status} ${error.statusText}`; message = String(error.data ?? message); }
-  else if (error instanceof Error) message = error.message;
-  return (
-    <html lang="en">
-      <head><title>{title}</title><Meta /><Links /></head>
-      <body><main className="page"><p className="eyebrow">Error</p><h1>{title}</h1><p>{message}</p></main><Scripts /></body>
-    </html>
-  );
-}
+export const links:LinksFunction=()=>[{rel:'stylesheet',href:styles}];
+export const meta:MetaFunction=()=>[{title:'Circuittelligence // Protocol:01 // Series-A'},{name:'description',content:'Hydrogen Shopify checkout storefront.'}];
+export async function loader({context}:LoaderFunctionArgs){return {cart:await context.cart.get()};}
+export default function App(){return <html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><Meta/><Links/></head><body><Layout/><ScrollRestoration/><Scripts/></body></html>;}
+export function ErrorBoundary(){const e=useRouteError();let title='Protocol exception',message='Unexpected storefront state.'; if(isRouteErrorResponse(e)){title=`${e.status} ${e.statusText}`;message=String(e.data??message)} else if(e instanceof Error) message=e.message; return <html lang="en"><head><title>{title}</title><Meta/><Links/></head><body><main className="page"><h1>{title}</h1><p>{message}</p></main><Scripts/></body></html>;}

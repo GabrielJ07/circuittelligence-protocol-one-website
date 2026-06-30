@@ -1,43 +1,15 @@
 import {Link} from 'react-router';
-import {Image, Money} from '@shopify/hydrogen';
-import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
-import type {SeriesAProduct} from '~/lib/series-a';
-import {COMMERCE_LABELS} from '~/lib/brand';
+import {BuyButton} from '~/components/BuyButton';
+import type {SeriesAProduct} from '~/lib/products';
+import {isConfiguredVariantId} from '~/lib/products';
 
-type ShopifyProductCard = {
-  id: string;
-  title: string;
-  handle: string;
-  productType?: string | null;
-  availableForSale?: boolean | null;
-  featuredImage?: {url: string; altText?: string | null; width?: number | null; height?: number | null} | null;
-  priceRange?: {minVariantPrice: {amount: string; currencyCode: CurrencyCode}};
-};
-
-export function ProductCard({product}: {product: ShopifyProductCard | SeriesAProduct}) {
-  const isLive = 'id' in product;
-  const displayType = isLive ? product.productType : product.category;
-  const available = isLive ? Boolean(product.availableForSale) : true;
-
-  return (
-    <article className="product-card">
-      <Link to={`/products/${product.handle}`}>
-        {isLive && product.featuredImage ? (
-          <Image data={product.featuredImage} aspectRatio="4/5" sizes="(min-width: 980px) 25vw, 100vw" />
-        ) : (
-          <div className="product-placeholder" aria-hidden="true">
-            <span>{'code' in product ? product.code : 'SERIES-A'}</span>
-          </div>
-        )}
-        <div className="product-card-body">
-          <p className="eyebrow">{displayType}</p>
-          <h3>{product.title}</h3>
-          <p className="product-meta">
-            <span>{isLive && product.priceRange ? <Money data={product.priceRange.minVariantPrice} /> : 'price' in product ? product.price : null}</span>
-            <span>{available ? COMMERCE_LABELS.inStock : COMMERCE_LABELS.soldOut}</span>
-          </p>
-        </div>
-      </Link>
-    </article>
-  );
+export function ProductCard({product}:{product:SeriesAProduct}) {
+  const configured=isConfiguredVariantId(product.shopifyVariantGid);
+  return <article className="card">
+    <Link className="product-art" to={`/products/${product.handle}`}><span>{product.code}</span></Link>
+    <div className="card-body">
+      <p className="eyebrow">{product.category}</p><h3><Link to={`/products/${product.handle}`}>{product.title}</Link></h3><p className="price">{product.price}</p>
+      <BuyButton merchandiseId={product.shopifyVariantGid} productCode={product.code} disabledReason={configured?undefined:'Replace this placeholder with a real Shopify ProductVariant GID.'}/>
+    </div>
+  </article>;
 }

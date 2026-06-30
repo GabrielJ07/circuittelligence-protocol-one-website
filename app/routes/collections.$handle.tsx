@@ -20,7 +20,8 @@ export async function loader({params, context}: LoaderFunctionArgs) {
       products: collection?.products?.nodes?.length ? collection.products.nodes : SERIES_A_PRODUCTS,
       isFallback: !collection,
     };
-  } catch {
+  } catch (error) {
+    console.error(`[collections.$handle] Storefront query failed for handle "${handle}":`, error);
     return {collection: null, products: SERIES_A_PRODUCTS, isFallback: true};
   }
 }

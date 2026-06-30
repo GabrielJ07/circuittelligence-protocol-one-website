@@ -1,69 +1,7 @@
-import type {LoaderFunctionArgs, MetaFunction} from 'react-router';
-import {Link, useLoaderData} from 'react-router';
-import {Image, Money} from '@shopify/hydrogen';
-import {ProductPurchaseForm} from '~/components/ProductPurchaseForm';
-import {PRODUCT_QUERY} from '~/graphql/storefront';
-import {BRAND, COLLECTION_HANDLE, COMMERCE_LABELS} from '~/lib/brand';
-import {getFallbackProduct} from '~/lib/series-a';
-
-export const meta: MetaFunction<typeof loader> = ({data}) => [
-  {title: data?.product?.seo?.title ?? data?.product?.title ?? data?.fallbackProduct?.title ?? BRAND.pageTitle},
-  {name: 'description', content: data?.product?.seo?.description ?? data?.product?.description ?? 'Series-A product.'},
-];
-
-export async function loader({params, context}: LoaderFunctionArgs) {
-  const handle = params.handle;
-  if (!handle) throw new Response('Product handle is required.', {status: 400});
-  let product = null;
-  try {
-    const response = await context.storefront.query(PRODUCT_QUERY, {variables: {handle}, cache: context.storefront.CacheShort()});
-    product = response.product;
-  } catch {
-    product = null;
-  }
-  const fallbackProduct = getFallbackProduct(handle);
-  if (!product && !fallbackProduct) throw new Response('Product not found.', {status: 404});
-  return {product, fallbackProduct};
-}
-
-export default function ProductRoute() {
-  const {product, fallbackProduct} = useLoaderData<typeof loader>();
-
-  if (!product && fallbackProduct) {
-    return (
-      <main className="page product-page">
-        <section className="product-placeholder large" aria-hidden="true"><span>{fallbackProduct.code}</span></section>
-        <section className="product-detail">
-          <p className="eyebrow">{fallbackProduct.code} / {fallbackProduct.category}</p>
-          <h1>{fallbackProduct.title}</h1>
-          <p className="price">{fallbackProduct.price}</p>
-          <p>Live purchase activates when this handle resolves to a Shopify product variant.</p>
-          <Link className="button secondary" to={`/collections/${COLLECTION_HANDLE}`}>{COMMERCE_LABELS.continueShopping}</Link>
-        </section>
-      </main>
-    );
-  }
-
-  if (!product) throw new Response('Product not found.', {status: 404});
-  const variants = product.variants.nodes;
-  const firstVariant = product.selectedOrFirstAvailableVariant ?? variants[0];
-
-  return (
-    <main className="page product-page">
-      <section>
-        {product.featuredImage ? (
-          <Image data={product.featuredImage} aspectRatio="4/5" sizes="(min-width: 980px) 50vw, 100vw" />
-        ) : (
-          <div className="product-placeholder large" aria-hidden="true"><span>{fallbackProduct?.code ?? 'SERIES-A'}</span></div>
-        )}
-      </section>
-      <section className="product-detail">
-        <p className="eyebrow">{fallbackProduct?.code ? `${fallbackProduct.code} / ` : ''}{product.productType}</p>
-        <h1>{product.title}</h1>
-        {firstVariant?.price ? <p className="price"><Money data={firstVariant.price} /></p> : null}
-        {product.description ? <p>{product.description}</p> : null}
-        <ProductPurchaseForm variants={variants} productCode={fallbackProduct?.code} />
-      </section>
-    </main>
-  );
-}
+import type {LoaderFunctionArgs,MetaFunction} from 'react-router';
+import {Link,useLoaderData} from 'react-router';
+import {BuyButton} from '~/components/BuyButton';
+import {getProduct,isConfiguredVariantId} from '~/lib/products';
+export const meta:MetaFunction<typeof loader>=({data})=>[{title:data?.product?.title??'Series-A product'}];
+export async function loader({params}:LoaderFunctionArgs){const handle=params.handle;if(!handle) throw new Response('Missing product handle.',{status:400}); const product=getProduct(handle); if(!product) throw new Response('Product not found.',{status:404}); return {product};}
+export default function ProductRoute(){const {product}=useLoaderData<typeof loader>(); const configured=isConfiguredVariantId(product.shopifyVariantGid); return <main className="page product-page"><section className="product-art large"><span>{product.code}</span></section><section className="detail"><p className="eyebrow">{product.code} / {product.category}</p><h1>{product.title}</h1><p className="price">{product.price}</p><BuyButton merchandiseId={product.shopifyVariantGid} productCode={product.code} disabledReason={configured?undefined:'Replace this placeholder with a real Shopify ProductVariant GID.'}/><div className="actions"><Link className="text-link" to="/cart">View cart</Link><Link className="text-link" to="/collections/series-a">Back to Series-A</Link></div></section></main>}
